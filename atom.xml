@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[SEEK @ UOIT DC]]></title>
+  <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
+  <link href="http://seekuoitdc.github.io/"/>
+  <updated>2015-05-10T12:03:44-04:00</updated>
+  <id>http://seekuoitdc.github.io/</id>
+  <author>
+    <name><![CDATA[SEEK UOIT DC]]></name>
+    <email><![CDATA[seekuoitdc@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>
