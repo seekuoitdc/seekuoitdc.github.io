@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2015-12-13T20:36:04+00:00</updated>
+  <updated>2015-12-13T22:12:39+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -20,7 +20,7 @@
     <id>http://seekuoitdc.github.io/blog/2015/11/21/git-and-github-workshop-slides</id>
     <content type="html"><![CDATA[<p>Last week, on November 18th, SEEK ran a workshop on Git and Github. We covered the basics about how it
 works, how it can be used to manage code development, and how it can be used for simple (static-content)
-web hosting. The slides are available <a href="2015_git_workshop/2015_git_workshop.html">here</a>.</p>
+web hosting. The slides are available <a href="http://seekuoitdc.github.io/2015_git_workshop/2015_git_workshop.html">here</a>.</p>
 ]]></content>
   </entry>
   
