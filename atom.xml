@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2015-12-13T22:12:39+00:00</updated>
+  <updated>2016-03-06T01:34:42+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[UOIT ENGSOC Engineering Conference]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/03/04/uoit-engineering-conference/"/>
+    <updated>2016-03-04T18:32:19+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/03/04/uoit-engineering-conference</id>
+    <content type="html"><![CDATA[<p>From March 8th to March 10th UOIT Engineering Students&#8217; Society will be hosting the UOIT Engineering
+conference. For more details and to RSVP click <a href="https://www.facebook.com/events/1517085868597603/">here</a>.
+Registration can be found at <a href="http://goo.gl/forms/kzHflzueoO">http://goo.gl/forms/kzHflzueoO</a></p>
+
+<p><img src="http://seekuoitdc.github.io/images/2016-03-04-uoit-engineering-conference/conference_poster.png" alt="/images/2016-03-04-uoit-engineering-conference/conference_poster.png" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Git and Github Workshop Slides]]></title>
