@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://seekuoitdc.github.io/blog/2016/03/14/ai-workshop/</loc>
+    <lastmod>2016-03-14T20:30:00+00:00</lastmod>
+  </url>
+  <url>
     <loc>http://seekuoitdc.github.io/blog/2016/03/08/arduino-workshop/</loc>
     <lastmod>2016-03-08T19:12:36+00:00</lastmod>
   </url>

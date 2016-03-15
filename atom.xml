@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-03-09T02:24:28+00:00</updated>
+  <updated>2016-03-14T20:00:29+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Machine Learning and Artificial Intelligence Workshop - This Week]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/03/14/ai-workshop/"/>
+    <updated>2016-03-14T20:30:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/03/14/ai-workshop</id>
+    <content type="html"><![CDATA[<p>This Wednesday (March 16th 3:30PM - 6:30PM), SEEK will be hosting a guest presenter for a workshop on Machine Learning and Artificial Intelligence.
+Anyone is encouraged to come, but some programming experience would definitely be helpful. Bring your laptop as you will need to
+connect to <em>Microsoft Azure Machine Learning Studio</em>. Location for this workshop is ERC1094. Food and refreshments will be provided as well as
+a challenge at the end of the workshop with a chance to win some swag (mouse, keyboard, etc&hellip;) Hope to see you there!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Arduino Workshop - Tomorrow]]></title>
