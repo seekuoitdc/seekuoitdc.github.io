@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-03-14T20:00:29+00:00</updated>
+  <updated>2016-03-23T01:38:20+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,20 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Docker Workshop Tomorrow]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/03/22/docker-workshop/"/>
+    <updated>2016-03-22T18:22:02+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/03/22/docker-workshop</id>
+    <content type="html"><![CDATA[<p>Tomorrow (March 23rd), in ERC1094 from 3:30PM to 5:30PM, SEEK will be running a workshop on software deployment with Docker.
+For those who do not know what Docker is, it&rsquo;s a set of software tools which allow a developer to quickly deploy a software service
+(often a web service). For example, start with someone else&rsquo;s already-created Apache image, modify it with your code
+(for example your website) and then deploy it on any server. It&rsquo;s like a VM, but without virtualizing an entire computer - instead
+it just wraps your software deployment in a container where it can be shipped and ran anywhere. Everyone is welcome.
+There will be demos and an opportunity for students to try deploying their own service with Docker. Hope to see you there.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Machine Learning and Artificial Intelligence Workshop - This Week]]></title>
