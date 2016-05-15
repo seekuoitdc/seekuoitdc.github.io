@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-03-23T01:38:20+00:00</updated>
+  <updated>2016-05-15T21:21:54+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Docker Workshop Slides]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/05/14/docker-slides/"/>
+    <updated>2016-05-14T17:02:37+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/05/14/docker-slides</id>
+    <content type="html"><![CDATA[<p><a href="http://seekuoitdc.github.io/2016_docker_workshop/2016_docker_workshop.html">Here</a> are the slides from our Winter 2016 workshop on Docker. We covered the basics of Docker - what it is,
+how to install it, how to use pre-existing Docker images, and how to deploy your own applications with Docker. Enjoy!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Docker Workshop Tomorrow]]></title>
