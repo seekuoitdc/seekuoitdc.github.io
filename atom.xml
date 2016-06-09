@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-05-15T21:21:54+00:00</updated>
+  <updated>2016-06-07T03:37:28+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Updated Website With Helpful Resources]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/06/04/updated-resources/"/>
+    <updated>2016-06-04T19:08:17+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/06/04/updated-resources</id>
+    <content type="html"><![CDATA[<p>seekuoitdc.github.io has been recently updated with a <a href="http://seekuoitdc.github.io/resources">resources</a> section. This is the section of our website dedicated to helping
+students find resources related to their software and electronic projects on and around the UOIT/DC campus. Special thanks to one
+of our members, Tadeasko, for creating the awesome <a href="http://seekuoitdc.github.io/resources/techstore.html">picture map</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Docker Workshop Slides]]></title>
