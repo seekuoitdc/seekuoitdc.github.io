@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-06-07T03:37:28+00:00</updated>
+  <updated>2016-10-02T21:30:24+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Linux Workshop - This Week]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/10/02/linux-workshop/"/>
+    <updated>2016-10-02T17:25:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/10/02/linux-workshop</id>
+    <content type="html"><![CDATA[<p>Tomorrow (October 3rd 2:00PM - 3:00PM), SEEK will be running its first workshop for the 2016 - 2017 year. The topic is Introduction to Linux.
+We will cover fixing the broken Ubuntu image installed on the UOIT engineering laptops and connecting to CAMPUS-AIR. In addition we will cover
+the basics of using Linux, and automating work with Linux shell scripting. Those who do not have Linux on their laptops are still welcome to
+come and we will assist in creating a Linux Virtual Machine (VM) for learning Linux. Location for this event is J102 (Simcoe Building)
+Hope to see you there!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Updated Website With Helpful Resources]]></title>
