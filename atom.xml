@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-10-02T21:30:24+00:00</updated>
+  <updated>2016-10-12T01:38:36+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Slides From Introduction to Linux Workshop]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/10/11/linux-workshop-slides/"/>
+    <updated>2016-10-11T20:18:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/10/11/linux-workshop-slides</id>
+    <content type="html"><![CDATA[<p>Thank you to everyone who came out to our Introduction to Linux workshop last Monday. As promised, <a href="http://seekuoitdc.github.io/2016_intro_linux_workshop/presentation.html">here</a>
+are the slides from the presentation. For the people who were unable to log back into their Ubuntu user account after installing updates, one of our
+members, who had this problem, was able to fix it through the following steps:</p>
+
+<ol>
+<li><p>Select advanced options when booting Ubuntu (The same option we used for creating the user account)</p></li>
+<li><p>Start linux in recovery mode (Exactly how we created the user account )</p></li>
+<li><p>In the recovery menu choose <em>dpkg repair broken packages</em></p></li>
+<li><p>You will be asked if you allow the root filesystem to be remounted as read/write, choose <em>yes</em></p></li>
+<li><p>Dpkg will then begin repairing broken packages (which resulted from the failed update), this may take some time.</p></li>
+<li><p>When this is complete you will be back at the recovery menu. Choose <em>resume</em> and Ubuntu should now work normally.</p></li>
+<li><p>On all subsequent reboots, start Ubuntu normally (without going into advanced options)</p></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introduction to Linux Workshop - This Week]]></title>
