@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-10-12T01:38:36+00:00</updated>
+  <updated>2016-11-16T03:13:53+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,19 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Bootstrap - This Week]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2016/11/15/bootstrap-workshop/"/>
+    <updated>2016-11-15T22:36:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2016/11/15/bootstrap-workshop</id>
+    <content type="html"><![CDATA[<p>Tomorrow (November 16th 5:10PM - 6:30PM), SEEK will be running its second workshop for the 2016 - 2017 year. We will be covering designing a
+website using the Bootstrap framework. Bootstrap is a framework for designing a website so that it is presented properly on a wide variety of
+screens (laptops, tablets, phones, etc.). In addition to designing a website with Bootstrap, if time permits, we will cover using Bootstrap
+templates as well as compiling Bootstrap 4 from its SASS code. Location for this event is ERC1092.
+Hope to see you there!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Slides From Introduction to Linux Workshop]]></title>

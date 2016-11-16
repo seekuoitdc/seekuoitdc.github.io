@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://seekuoitdc.github.io/blog/2016/11/15/bootstrap-workshop/</loc>
+    <lastmod>2016-11-15T22:36:00+00:00</lastmod>
+  </url>
+  <url>
     <loc>http://seekuoitdc.github.io/blog/2016/10/11/linux-workshop-slides/</loc>
     <lastmod>2016-10-11T20:18:00+00:00</lastmod>
   </url>
