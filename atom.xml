@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2016-11-16T03:13:53+00:00</updated>
+  <updated>2017-02-15T05:36:58+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,84 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reading Week Hackathon - Win Prizes!]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2017/02/15/hackathon-reading-week-2017/"/>
+    <updated>2017-02-15T09:00:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2017/02/15/hackathon-reading-week-2017</id>
+    <content type="html"><![CDATA[<p>Ready to combine experiential learning with friendly competition? Join the Hackathon; a week full of collaborative programming, innovation
+and prizes! Open to all students, participants will work in groups of 4 or less (this includes solo work) to build their projects and
+demonstrate them on the presentation day (TBA - Based on the availability of participants).
+The sign-up form can be found <a href="https://docs.google.com/forms/d/e/1FAIpQLSfBI-jNmhFrH-50owFQ6dbGKdUAQg_cqbtdIlTAAuYRJUUfpw/viewform">here</a>.</p>
+
+<h4>Q &amp; A</h4>
+
+<ul>
+<li>Q: When are the meetings?</li>
+</ul>
+
+
+<p>A: The only official meeting is presentation day (TBA). Group members must decide how they will collaborate with each other on their projects.</p>
+
+<ul>
+<li>Q: Does my project need to be both software and hardware based?</li>
+</ul>
+
+
+<p>A: Nope. You&rsquo;re free to build a software-only project or hardware-only project. You may also build a hardware/software project.</p>
+
+<ul>
+<li>Q: I want to involve electronic hardware in my project but I don&rsquo;t have any. What can I do?</li>
+</ul>
+
+
+<p>A: Brilliant is running a Boot Camp on developing a technical design over the reading week (Feb. 21 - 23). They will have 10 Arduino kits for students to use and keep.
+The project which students build at the Boot Camp may also be used for the hackathon. Check out Brilliant&rsquo;s event at <a href="http://www.faststartfs.ca/bootcamp2017">www.faststartfs.ca/bootcamp2017</a>.</p>
+
+<ul>
+<li>Q: Any other ways to get electronic parts?</li>
+</ul>
+
+
+<p>A: Yes. SEEK has electronic parts available for borrowing at the library. Ask about this in the #hackathon channel on <a href="https://seekuoitdc.slack.com">Slack</a> and we will make
+sure you are able to borrow parts for the duration of the hackathon.</p>
+
+<ul>
+<li>Q: What is the level of complexity of the projects?</li>
+</ul>
+
+
+<p>A: More advanced projects will be scored higher, but all levels of complexity will be accepted.</p>
+
+<ul>
+<li>Q: Can I re-use an old project?</li>
+</ul>
+
+
+<p>A: You may only present new content (created during the reading week). So if you&rsquo;re extending an old project, you will only be graded based on the modifications that took place during the hackathon.</p>
+
+<ul>
+<li>Q: Are there prizes for the winning teams?</li>
+</ul>
+
+
+<p>A: You bet! Prizes will be awarded to the 1st and 2nd place winners.</p>
+
+<ul>
+<li>Q: Where can I find out more information?</li>
+</ul>
+
+
+<p>A: The quickest way would be to send us a message on the #hackathon channel on <a href="https://seekuoitdc.slack.com">Slack</a>. You can also message our Facebook <a href="https://www.facebook.com/seek.uoitdc">page</a> or send us an email.</p>
+
+<p>Finally a big thank you to the <a href="https://www.facebook.com/uoitengsoc">UOIT Engineering Students Society</a>, <a href="https://www.facebook.com/uoitbrilliant">Brilliant Entrepreneurship</a>, and the <a href="https://www.facebook.com/IEEEStudentBranchUOIT">UOIT IEEE Student chapter</a> for helping us make this possible.</p>
+
+<p>Hope to see you there!</p>
+
+<p><img src="http://seekuoitdc.github.io/images/2017-02-15-hackathon-reading-week-2017/hackathon_poster.png" alt="/images/2017-02-15-hackathon-reading-week-2017/hackathon_poster.png" /></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introduction to Bootstrap - This Week]]></title>
