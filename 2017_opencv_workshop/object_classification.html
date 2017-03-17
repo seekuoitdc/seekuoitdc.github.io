@@ -1,0 +1,605 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Object Classification</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			
+			function load_image_to_source(img_id)
+			{
+				var img_element = document.getElementById(img_id);
+				var src_cnvs = document.getElementById("source_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				src_ctx.drawImage(img_element,0,0);
+			}
+			
+			/*
+			function red_distance(r, g, b)
+			{
+				var R_CONST = 113;
+				var G_CONST = 26;
+				var B_CONST = 22;
+				
+				return Math.sqrt((R_CONST - r)*(R_CONST - r) + (G_CONST - g)*(G_CONST - g) + (B_CONST - b)*(B_CONST - b));
+				
+			}
+			*/
+			
+			function draw_graphs()
+			{
+				var graphs_canvas = document.getElementById("graphs_canvas");
+				var graphs_ctx = graphs_canvas.getContext("2d");
+				
+				//First fill the context with white
+				var ctx_data = graphs_ctx.getImageData(0,0,400,400);
+				ctx_data.data.fill(255);
+				graphs_ctx.putImageData(ctx_data,0,0);
+				
+				graphs_ctx.fillStyle = "#ff0000";
+				
+				
+				var sel_img_cnvs = document.getElementById("source_canvas");
+				var sel_img_ctx = sel_img_cnvs.getContext("2d");
+				
+				//Get a few horizontal scanlines
+				//var horizontal_sl_1 = sel_img.getImageData(0,100,400,101).data;
+				
+				
+				//RED Lines
+				var horizontal_sl_1 = sel_img_ctx.getImageData(0,100,400,1).data;
+				var horizontal_sl_2 = sel_img_ctx.getImageData(0,200,400,1).data;
+				var horizontal_sl_3 = sel_img_ctx.getImageData(0,300,400,1).data;
+				
+				//Black Lines
+				var horizontal_sl_4 = sel_img_ctx.getImageData(0,180,400,1).data;
+				var horizontal_sl_5 = sel_img_ctx.getImageData(0,250,400,1).data;
+				
+				/*
+				var R_MIN = 60;
+				//var G_MAX = 40;
+				var G_MAX = 60;
+				//var B_MAX = 40;
+				var B_MAX = 60;
+				*/
+				var R_MIN = document.getElementById("r_min").value;
+				var G_MAX = document.getElementById("g_max").value;
+				var B_MAX = document.getElementById("b_max").value;
+				
+				//var COLOR_THRESH = 40;
+				
+				for (var i = 0; i < 400; i++)
+				{
+					//console.log(horizontal_sl_1[4*i]);
+					if (horizontal_sl_1[4*i] > R_MIN && horizontal_sl_1[4*i+1] < G_MAX && horizontal_sl_1[4*i+2] < B_MAX)
+					//if (red_distance(horizontal_sl_1[4*i], horizontal_sl_1[4*i+1], horizontal_sl_1[4*i+2]) < COLOR_THRESH)
+					{
+						graphs_ctx.fillStyle = "#ff0000";
+						graphs_ctx.fillRect(i,100,10,10);
+					}
+					
+					if (horizontal_sl_4[4*i] < 30 && horizontal_sl_4[4*i+1] < 30 && horizontal_sl_4[4*i+2] < 30)
+					{
+						graphs_ctx.fillStyle = "#000000";
+						graphs_ctx.fillRect(i,180,10,10);
+					}
+					
+					
+					if (horizontal_sl_2[4*i] > R_MIN && horizontal_sl_2[4*i+1] < G_MAX && horizontal_sl_2[4*i+2] < B_MAX)
+					//if (red_distance(horizontal_sl_2[4*i], horizontal_sl_2[4*i+1], horizontal_sl_2[4*i+2]) < COLOR_THRESH)
+					{
+						graphs_ctx.fillStyle = "#ff0000";
+						graphs_ctx.fillRect(i,200,10,10);
+					}
+					
+					if (horizontal_sl_5[4*i] < 30 && horizontal_sl_5[4*i+1] < 30 && horizontal_sl_5[4*i+2] < 30)
+					{
+						graphs_ctx.fillStyle = "#000000";
+						graphs_ctx.fillRect(i,250,10,10);
+					}
+					
+					if (horizontal_sl_3[4*i] > R_MIN && horizontal_sl_3[4*i+1] < G_MAX && horizontal_sl_3[4*i+2] < B_MAX)
+					//if (red_distance(horizontal_sl_3[4*i], horizontal_sl_3[4*i+1], horizontal_sl_3[4*i+2]) < COLOR_THRESH)
+					{
+						graphs_ctx.fillStyle = "#ff0000";
+						graphs_ctx.fillRect(i,300,10,10);
+					}
+				}
+				
+			}
+			
+			function qualify_graph_stop_sign()
+			{
+				var graphs_canvas = document.getElementById("graphs_canvas");
+				var graphs_ctx = graphs_canvas.getContext("2d");
+				
+				var horizontal_sl_1 = graphs_ctx.getImageData(0,105,400,1).data;
+				var horizontal_sl_2 = graphs_ctx.getImageData(0,200,400,1).data;
+				var horizontal_sl_3 = graphs_ctx.getImageData(0,300,400,1).data;
+				
+				var top_bar_correct = false;
+				var middle_bar_correct = false;
+				var bottom_bar_correct = false;
+				
+				//Process Top line
+				var prev_state = "WHITE";
+				var count_red_white = 0;
+				var count_white_red = 0;
+				for (var i = 0; i < 400; i++)
+				{
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 0 && horizontal_sl_1[4*i+2] == 0 && prev_state == "WHITE")
+					{
+						//Transition WHITE->RED
+						count_white_red++;
+						prev_state = "RED";
+					}
+					
+					else if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 255 && horizontal_sl_1[4*i+2] == 255 && prev_state == "RED")
+					{
+						//Transition RED->WHITE
+						count_red_white++;
+						prev_state = "WHITE";
+					}
+				}
+				top_bar_correct = (count_red_white == 1) && (count_white_red == 1);
+				console.log(top_bar_correct);
+				//console.log(count_white_red);
+				//console.log(count_red_white);
+				
+				//Process Middle line
+				prev_state = "WHITE";
+				count_red_white = 0;
+				count_white_red = 0;
+				for (var i = 0; i < 400; i++)
+				{
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && prev_state == "WHITE")
+					{
+						//Transition WHITE->RED
+						count_white_red++;
+						prev_state = "RED";
+					}
+					
+					else if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 255 && horizontal_sl_2[4*i+2] == 255 && prev_state == "RED")
+					{
+						//Transition RED->WHITE
+						count_red_white++;
+						prev_state = "WHITE";
+					}
+				}
+				middle_bar_correct = (count_red_white == 6) && (count_white_red == 6);
+				console.log(middle_bar_correct);
+				console.log(count_white_red);
+				console.log(count_red_white);
+				
+				//Process Bottom line
+				prev_state = "WHITE";
+				count_red_white = 0;
+				count_white_red = 0;
+				for (var i = 0; i < 400; i++)
+				{
+					if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 0 && horizontal_sl_3[4*i+2] == 0 && prev_state == "WHITE")
+					{
+						//Transition WHITE->RED
+						count_white_red++;
+						prev_state = "RED";
+					}
+					
+					else if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 255 && horizontal_sl_3[4*i+2] == 255 && prev_state == "RED")
+					{
+						//Transition RED->WHITE
+						count_red_white++;
+						prev_state = "WHITE";
+					}
+				}
+				bottom_bar_correct = (count_red_white == 1) && (count_white_red == 1);
+				console.log(bottom_bar_correct);
+				//console.log(count_white_red);
+				//console.log(count_red_white);
+				
+				//Return whether or not this is a stop sign
+				is_stop_sign = top_bar_correct && middle_bar_correct && bottom_bar_correct;
+				
+				return is_stop_sign;
+				
+			}
+			
+			function qualify_graph_yield_sign()
+			{
+				var graphs_canvas = document.getElementById("graphs_canvas");
+				var graphs_ctx = graphs_canvas.getContext("2d");
+				
+				var horizontal_sl_1 = graphs_ctx.getImageData(0,105,400,1).data;
+				var horizontal_sl_2 = graphs_ctx.getImageData(0,200,400,1).data;
+				var horizontal_sl_3 = graphs_ctx.getImageData(0,300,400,1).data;
+				
+				var top_left = -1;
+				var top_right = -1;
+				var middle_left = -1;
+				var middle_right = -1;
+				var bottom_left = -1;
+				var state = "TOPLEFT";
+				
+				
+				//Process Top Line
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 0 && horizontal_sl_1[4*i+2] == 0 && state == "TOPLEFT")
+					{
+						top_left = i;
+						state = "WAIT";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 255 && horizontal_sl_1[4*i+2] == 255 && state == "WAIT")
+					{
+						state = "TOPRIGHT";
+					}
+					
+						
+					//Get Right corner of 2nd long streak
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 0 && horizontal_sl_1[4*i+2] == 0 && state == "TOPRIGHT")
+					{
+						state = "ENDTOPRIGHT";
+					}
+					
+					//Get the end of this long steak
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 255 && horizontal_sl_1[4*i+2] == 255 && state == "ENDTOPRIGHT")
+					{
+						top_right = i;
+						state = "MIDDLELEFT";
+					}
+					
+				}
+				
+				console.log("Top Left: " + top_left);
+				console.log("Top Right: " + top_right);
+				
+				//Process Middle Line
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && state == "MIDDLELEFT")
+					{
+						middle_left = i;
+						state = "WAIT";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 255 && horizontal_sl_2[4*i+2] == 255 && state == "WAIT")
+					{
+						state = "MIDDLERIGHT";
+					}
+					
+					//Get Right corner of 2nd long streak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && state == "MIDDLERIGHT")
+					{
+						state = "ENDMIDDLERIGHT";
+					}
+					
+					//Get the end of this long steak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 255 && horizontal_sl_2[4*i+2] == 255 && state == "ENDMIDDLERIGHT")
+					{
+						middle_right = i;
+						state = "BOTTOMLEFT";
+					}
+					
+				}
+				
+				console.log("Middle Left: " + middle_left);
+				console.log("Middle Right: " + middle_right);
+				
+				//Process Bottom Line
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 0 && horizontal_sl_3[4*i+2] == 0 && state == "BOTTOMLEFT")
+					{
+						bottom_left = i;
+					}
+				}
+				
+				console.log("Bottom Left: " + bottom_left);
+				
+				//Qualification criteria
+				is_yield_sign = (top_left < middle_left) && (middle_left < bottom_left) && (top_right > middle_right);
+				
+				return is_yield_sign;
+			}
+			
+			function qualify_graph_noleft_sign()
+			{
+			
+				var graphs_canvas = document.getElementById("graphs_canvas");
+				var graphs_ctx = graphs_canvas.getContext("2d");
+				
+				var horizontal_sl_1 = graphs_ctx.getImageData(0,105,400,1).data;
+				var horizontal_sl_2 = graphs_ctx.getImageData(0,200,400,1).data;
+				var horizontal_sl_3 = graphs_ctx.getImageData(0,300,400,1).data;
+				
+				var horizontal_sl_4 = graphs_ctx.getImageData(0,181,400,1).data;
+				var horizontal_sl_5 = graphs_ctx.getImageData(0,251,400,1).data;
+				
+				var top_left = -1;
+				var top_right = -1;
+				var middle_left = -1;
+				var middle_middle = -1;
+				var middle_right = -1;
+				var bottom_left = -1;
+				var bottom_right = -1;
+				
+				var state = "TOPLEFT";
+				
+				//Top row RED
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 0 && horizontal_sl_1[4*i+2] == 0 && state == "TOPLEFT")
+					{
+						top_left = i;
+						state = "WAIT_1";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 255 && horizontal_sl_1[4*i+2] == 255 && state == "WAIT_1")
+					{
+						state = "TOPRIGHT";
+					}
+						
+
+					//Get Left corner of 2nd long streak
+					if (horizontal_sl_1[4*i] == 255 && horizontal_sl_1[4*i+1] == 0 && horizontal_sl_1[4*i+2] == 0 && state == "TOPRIGHT")
+					{
+						top_right = i;
+						state = "WAIT_2";
+					}
+				}
+				
+				//Middle row RED
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && state == "WAIT_2")
+					{
+						middle_left = i;
+						state = "WAIT_3";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 255 && horizontal_sl_2[4*i+2] == 255 && state == "WAIT_3")
+					{
+						state = "MIDDLEMIDDLE";
+					}
+						
+
+					//Get Left corner of 2nd long streak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && state == "MIDDLEMIDDLE")
+					{
+						middle_middle = i;
+						state = "WAIT_4";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 255 && horizontal_sl_2[4*i+2] == 255 && state == "WAIT_4")
+					{
+						state = "MIDDLERIGHT";
+					}
+					
+					//Get Left corner of 3rd long streak
+					if (horizontal_sl_2[4*i] == 255 && horizontal_sl_2[4*i+1] == 0 && horizontal_sl_2[4*i+2] == 0 && state == "MIDDLERIGHT")
+					{
+						middle_right = i;
+						state = "WAIT_5";
+					}
+				}
+				
+				//Bottom row RED
+				for (var i = 0; i < 400; i++)
+				{
+					//Get Left corner of 1st long streak
+					if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 0 && horizontal_sl_3[4*i+2] == 0 && state == "WAIT_5")
+					{
+						bottom_left = i;
+						state = "WAIT_6";
+					}
+					
+					//Wait for break
+					if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 255 && horizontal_sl_3[4*i+2] == 255 && state == "WAIT_6")
+					{
+						state = "BOTTOMRIGHT";
+					}
+						
+
+					//Get Left corner of 2nd long streak
+					if (horizontal_sl_3[4*i] == 255 && horizontal_sl_3[4*i+1] == 0 && horizontal_sl_3[4*i+2] == 0 && state == "BOTTOMRIGHT")
+					{
+						bottom_right = i;
+						state = "WAIT_7";
+					}
+				}
+				
+				//Top row BLACK
+				var arrow_segments = 0;
+				for (var i = 0; i < 400; i++)
+				{
+					if (horizontal_sl_4[4*i] == 0 && horizontal_sl_4[4*i+1] == 0 && horizontal_sl_4[4*i+2] == 0 && state == "WAIT_7")
+					{
+						//Does this lie to the right of middle_left but left of middle_right
+						if (i > middle_left && i < middle_right)
+						{
+							//We found part of the arrow
+							arrow_segments++;
+							state = "WAIT_8";
+						}
+					}
+					
+					if (horizontal_sl_4[4*i] == 0 && horizontal_sl_4[4*i+1] == 0 && horizontal_sl_4[4*i+2] == 0 && state == "WAIT_8")
+					{
+						//Does this lie to the right of middle_left but left of middle_right
+						if (i > middle_left && i < middle_right)
+						{
+							//We found part of the arrow
+							arrow_segments++;
+							state = "WAIT_9";
+						}
+					}
+					
+				}
+				
+				console.log("Top Left: " + top_left + ", Top Right: " + top_right);
+				console.log("Middle Left: " + middle_left + ", Middle Middle: " + middle_middle + ", Middle Right: " + middle_right);
+				console.log("Bottom Left: " + bottom_left + ", Bottom Right: " + bottom_right);
+				console.log("Arrow Segments: " + arrow_segments);
+				
+				//Qualify this as a no left sign, or not
+				is_noleft_sign = (top_left > middle_left) && (top_right > middle_left) && (middle_left < top_left) && (middle_right > top_right) && (middle_left < bottom_left) && (middle_right > bottom_right);
+				
+				return is_noleft_sign;
+				
+			}
+			
+			function alert_qualifier()
+			{
+				if (qualify_graph_stop_sign())
+				{
+					alert("Stop Sign");
+				}
+				else if (qualify_graph_yield_sign())
+				{
+					alert("Yield Sign");
+				}
+				else if (qualify_graph_noleft_sign())
+				{
+					alert("No Left Turn Sign");
+				}
+				else
+				{
+					alert("Unknown Object");
+				}
+			}
+			
+		</script>
+		
+		<h1>Object Classification</h1>
+		<p>
+			Classifying an object with computer vision algorithms consists of matching image features. Some of these image features are as follows:
+			<ul>
+				<li>Color</li>
+				<li>Shape (Edges)</li>
+				<li>Symmetry</li>
+				<li>Order of colors</li>
+			</ul>
+			This classification algorithm works as follows:
+			<ol>
+				<li>Sweep 3 horizontal lines across the image.</li>
+				<li>If the pixel in the image is close to red, mark the pixel in the graph as so.</li>
+				<li>Sweep 2 horizontal lines across the image.</li>
+				<li>If the pixel in the image is close to black, mark the pixel in the graph as so.</li>
+				<li>Compare critical points on the graph. Use boolean operators on critical points to classify the image.</li>
+			</ol>
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Click on one of the sample images to load the image to be processed. Click <i>Draw Graphs</i> to draw the graph of the image colors
+			for the given horizontal scanlines. Try adjusting <i>R_MAX</i>, <i>G_MIN</i>, and <i>B_MIN</i> for selecting the proper qualification
+			of red detection for optimal results.
+			Click <i>Classify Object</i> to compare critical points on the graph and classify the given image.
+		</p>
+		
+		
+		<!-- Preload the images -->
+		<img src="sample_images/400x400/no_left_sign_001.png" id="src__no_left_sign_001" hidden="true"/>
+		<img src="sample_images/400x400/no_left_sign_002.png" id="src__no_left_sign_002" hidden="true"/>
+		
+		<img src="sample_images/400x400/stop_sign_001.png" id="src__stop_sign_001" hidden="true"/>
+		<img src="sample_images/400x400/stop_sign_002.png" id="src__stop_sign_002" hidden="true"/>
+		
+		<img src="sample_images/400x400/yield_sign_001.png" id="src__yield_sign_001" hidden="true"/>
+		<img src="sample_images/400x400/yield_sign_002.png" id="src__yield_sign_002" hidden="true"/>
+		
+		
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="source_canvas" width="400" height="400"></canvas>
+					<!--
+					<img src="sample_images/no_left_sign_002.png" id="src__no_left_sign_002" width="400" height="400"/>
+					-->
+					
+				</td>
+				<td>
+					<canvas id="graphs_canvas" width="400" height="400"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								R_MIN:<input id="r_min" value=60></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								G_MAX:<input id="g_max" value=60></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								B_MAX:<input id="b_max" value=60></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Draw Graphs" onclick="draw_graphs()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Classify Object" onclick="alert_qualifier()"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<th>Sample Images</th>
+						<tr>
+							<td>
+								<input type="button" value="No Left Sign 1" onclick="load_image_to_source('src__no_left_sign_001')"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="No Left Sign 2" onclick="load_image_to_source('src__no_left_sign_002')"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Stop Sign 1" onclick="load_image_to_source('src__stop_sign_001')"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Stop Sign 2" onclick="load_image_to_source('src__stop_sign_002')"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Yield Sign 1" onclick="load_image_to_source('src__yield_sign_001')"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Yield Sign 2" onclick="load_image_to_source('src__yield_sign_002')"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="center_of_mass.html">Previous - Center of Mass</a>
+		<a href="mean_shift_motion_tracking.html">Next - Mean Shift Motion Tracking</a>
+	</body>
+</html>

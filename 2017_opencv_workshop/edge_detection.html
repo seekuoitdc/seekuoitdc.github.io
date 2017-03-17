@@ -1,0 +1,209 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Edge Detection</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			MAX_X = 500;
+			MAX_Y = 331;
+			SRC_CANVAS_OFFSET_TOP = 0;
+			SRC_CANVAS_OFFSET_LEFT = 0;
+			EDGE_THRESHOLD = 35;
+			function prepare_source_canvas()
+			{
+				var cnvs = document.getElementById("source_canvas");
+				var src_im = document.getElementById("source_image");
+				cnvs.width = src_im.width;
+				cnvs.height = src_im.height;
+				SRC_CANVAS_OFFSET_LEFT = cnvs.offsetLeft;
+				SRC_CANVAS_OFFSET_TOP = cnvs.offsetTop;
+				var ctx = cnvs.getContext("2d");
+				ctx.drawImage(src_im,0,0);
+				//Also set the destination canvas to the appropriate size
+				var dst_cnvs = document.getElementById("dest_canvas");
+				dst_cnvs.width = src_im.width;
+				dst_cnvs.height = src_im.height;
+			}
+			
+			function copy_to_dest()
+			{
+				var src_cnvs = document.getElementById("source_canvas");
+				var dst_cnvs = document.getElementById("dest_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dst_ctx = dst_cnvs.getContext("2d");
+				dst_cnvs.width = src_cnvs.width;
+				dst_cnvs.height = src_cnvs.height;
+				var src_data = src_ctx.getImageData(0,0,src_cnvs.width,dest_canvas.width);
+				dst_ctx.putImageData(src_data,0,0);
+			}
+			
+			function copy_to_dest_bw()
+			{
+				var src_cnvs = document.getElementById("source_canvas");
+				var dst_cnvs = document.getElementById("dest_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dst_ctx = dst_cnvs.getContext("2d");
+				dst_cnvs.width = src_cnvs.width;
+				dst_cnvs.height = src_cnvs.height;
+				var src_data = src_ctx.getImageData(0,0,src_cnvs.width,dest_canvas.width);
+				//console.log(src_data);
+				for (var i = 0; i < src_data.data.length; i+=4)
+				{
+					var r = src_data.data[i];
+					var g = src_data.data[i+1];
+					var b = src_data.data[i+2];
+					var gray = (r + g + b) / 3;
+					src_data.data[i] = gray;
+					src_data.data[i+1] = gray;
+					src_data.data[i+2] = gray;
+				}
+				dst_ctx.putImageData(src_data,0,0);
+			}
+			
+			function process_region(src_ctx, dst_ctx, x_pos, y_pos)
+			{
+				var block_data = src_ctx.getImageData(x_pos -1 , y_pos - 1, 2, 2);
+				
+				//Calculate Mean
+				var block_sum_r = 0;
+				var block_sum_g = 0;
+				var block_sum_b = 0;
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					block_sum_r += block_data.data[i];
+					block_sum_g += block_data.data[i+1];
+					block_sum_b += block_data.data[i+2];
+				}
+				var block_mean_r = block_sum_r / (block_data.data.length / 4);
+				var block_mean_g = block_sum_g / (block_data.data.length / 4);
+				var block_mean_b = block_sum_b / (block_data.data.length / 4);
+				
+				//Calculate Variance
+				var block_dev_r = 0;
+				var block_dev_g = 0;
+				var block_dev_b = 0;
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					var r = block_data.data[i];
+					var g = block_data.data[i+1];
+					var b = block_data.data[i+2];
+					
+					block_dev_r += (r - block_mean_r) * (r - block_mean_r);
+					block_dev_g += (g - block_mean_g) * (g - block_mean_g);
+					block_dev_b += (b - block_mean_b) * (b - block_mean_b);
+				}
+				var total_dev = Math.sqrt(block_dev_r + block_dev_g + block_dev_b);
+				
+				if (total_dev > EDGE_THRESHOLD)
+				{
+					dst_ctx.fillStyle = "#ff0000";
+					dst_ctx.fillRect(x_pos, y_pos, 2, 2);
+				}
+			}
+			
+			var DEMO_X = 0;
+			var DEMO_Y = 0;
+			function edge_step()
+			{
+				//console.log("edge_step called " + x + ", " + y);
+				
+				//Run in a loop for much faster speed
+				for (var i = 0; i < 100; i++)
+				{
+					var x_pos = DEMO_X;
+					var y_pos = DEMO_Y;
+					
+					//Process the region
+					process_region(MY_SRC_CTX, MY_DST_CTX, x_pos, y_pos);
+					
+					//Increment
+					DEMO_X += 1;
+					if (DEMO_X > MAX_X)
+					{
+						DEMO_X = 0;
+						DEMO_Y += 1;
+					}
+				}
+				//Decide if this method needs to be run again
+				if (DEMO_Y < MAX_Y)
+				{
+					window.setInterval(edge_step);
+				}
+				
+			}
+			
+			function edge_demo()
+			{
+				var src_cnvs = document.getElementById("source_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dest_canvas = document.getElementById("dest_canvas");
+				var dest_ctx = dest_canvas.getContext("2d");
+				MY_DST_CTX = dest_ctx;
+				MY_SRC_CTX = src_ctx;
+
+				
+				//Begin the edge_step process
+				edge_step();
+			}
+		</script>
+		
+		<h1>Edge Detection</h1>
+		<p>
+			Edge detection is an important concept in computer vision. It is used as a step in object detection. A simple edge detection
+			algorithm is as follows:
+			<ol>
+				<li>Sweep a 2x2 square region across the source image, like reading a book.</li>
+				<li>Compute the standard deviation of all pixels within that 2x2 region.</li>
+				<li>If the standard deviation exceeds a threshold value, mark this region as part of an edge.</li>
+			</ol>
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Click <i>Prepare Source Canvas</i> to load the image to be processed. Click <i>Edge Detect</i> to draw the detected edges.
+			Clicking <i>Copy as Color</i> or <i>Copy as Grayscale</i> before running <i>Edge Detect</i> will result in the detected
+			edges drawn on a color or grayscale background.
+		</p>
+		
+		<img src="new_york_street.png" id="source_image" hidden="true"/>
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="source_canvas"></canvas>
+				</td>
+				<td>
+					<canvas id="dest_canvas"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="Prepare Source Canvas" onclick="prepare_source_canvas()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Copy as Color" onclick="copy_to_dest()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Copy as Grayscale" onclick="copy_to_dest_bw()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Edge Detect" onclick="edge_demo()"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="color_threshold.html">Previous - Color Threshold</a>
+		<a href="erosion_dilation.html">Next - Erosion and Dilation</a>
+	</body>
+</html>

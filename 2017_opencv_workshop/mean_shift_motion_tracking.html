@@ -1,0 +1,272 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Mean Shift Motion Tracking</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body onload="setup_env()">
+		<script type="text/javascript">
+		
+			function prepare_prev_frame()
+			{
+				//Create a black frame as frame -1
+				var cnvs2 = document.getElementById("second_frame_canvas");
+				var ctx2 = cnvs2.getContext("2d");
+				ctx2.fillStyle = "#000000";
+				ctx2.fillRect(0,0,cnvs2.width,cnvs2.height);
+				PREV_FRAME_DATA = ctx2.getImageData(0,0,cnvs2.width,cnvs2.height);
+			}
+			
+			function frame_grab()
+			{
+				var cnvs = document.getElementById("first_frame_canvas");
+				var ctx = cnvs.getContext("2d");
+				var src_vid = document.getElementById("source_video");
+				cnvs.width = src_vid.videoWidth;
+				cnvs.height = src_vid.videoHeight;
+				
+				var cnvs2 = document.getElementById("second_frame_canvas");
+				var ctx2 = cnvs2.getContext("2d");
+				cnvs2.height = cnvs.height;
+				cnvs2.width = cnvs.width;
+
+				ctx2.putImageData(PREV_FRAME_DATA,0,0);
+				
+				
+				ctx.drawImage(src_vid,0,0);
+
+				PREV_FRAME_DATA = ctx.getImageData(0,0,cnvs.width,cnvs.height);
+				
+				compute_difference_frame();
+			}
+			
+			
+			ROI_X = 300;
+			ROI_Y = 300;
+			function compute_difference_frame()
+			{
+				var current_canvas = document.getElementById("first_frame_canvas");
+				var prev_canvas = document.getElementById("second_frame_canvas");
+				var current_ctx = current_canvas.getContext("2d");
+				var prev_ctx = prev_canvas.getContext("2d");
+				var diff_canvas = document.getElementById("difference_frame");
+				var diff_ctx = diff_canvas.getContext("2d");
+				var current_img_data = current_ctx.getImageData(0,0,current_canvas.width,current_canvas.height);
+				var prev_img_data = prev_ctx.getImageData(0,0,prev_canvas.width,prev_canvas.height);
+				
+				
+				diff_canvas.width = current_canvas.width;
+				diff_canvas.height = current_canvas.height;
+				
+				var output_data = diff_ctx.getImageData(0,0,diff_canvas.width, diff_canvas.height);
+				output_data.data.fill(255);
+				
+				for (var i = 0 ; i < current_img_data.data.length; i+=4)
+				{
+					var current_r = current_img_data.data[i];
+					var current_g = current_img_data.data[i+1];
+					var current_b = current_img_data.data[i+2];
+					
+					var prev_r = prev_img_data.data[i];
+					var prev_g = prev_img_data.data[i+1];
+					var prev_b = prev_img_data.data[i+2];
+					
+					var diff_r = current_r - prev_r;
+					var diff_g = current_g - prev_g;
+					var diff_b = current_b - prev_b;
+					
+					var euclid_color_dist = Math.sqrt(diff_r*diff_r + diff_g*diff_g + diff_b*diff_b);
+				
+					if (euclid_color_dist > 50)
+					{
+						//var x_pos = (i/4) % input_canvas.width;
+						//var y_pos = (i/4) / input_canvas.height;
+						//output_ctx.fillStyle = "#ff0000";
+						//output_ctx.fillRect(x_pos, y_pos, 1, 1);
+						output_data.data[i] = 255;
+						output_data.data[i+1] = 0;
+						output_data.data[i+2] = 0;
+					}
+				}
+				diff_ctx.putImageData(output_data,0,0);
+				
+				diff_ctx.lineWidth = 4;
+				diff_ctx.strokeStyle = "#00ff00";
+				
+				//Get the region of the moving object
+				//var reg_x = 300;
+				//var reg_y = 300;
+				var reg_x = ROI_X;
+				var reg_y = ROI_Y;
+				//var reg_w = 60;
+				//var reg_h = 60;
+				var reg_w = 30;
+				var reg_h = 30;
+				
+				
+				//Compute center-of-mass within this region
+				var x_coords = [];
+				var y_coords = [];
+				
+				var region_data = diff_ctx.getImageData(reg_x, reg_y, reg_w, reg_h);
+				
+				for (var i = 0; i < region_data.data.length; i+=4)
+				{
+					//for each pixel
+					var x_pos = (i/4) % reg_w;
+					var y_pos = (i/4) / reg_h;
+					var r = region_data.data[i];
+					var g = region_data.data[i+1];
+					var b = region_data.data[i+2];
+					if (r == 255 && g == 0 && b == 0)
+					{
+						//red pixel
+						x_coords.push(x_pos);
+						y_coords.push(y_pos);
+					}
+				}
+				
+				//Average of x_coords and y_coords
+				var center_x = 0;
+				var center_y = 0;
+				
+				for (var i = 0; i < x_coords.length; i++)
+				{
+					center_x += x_coords[i];
+				}
+				center_x = Math.ceil(center_x / x_coords.length);
+				
+				for (var i = 0; i < y_coords.length; i++)
+				{
+					center_y += y_coords[i];
+				}
+				center_y = Math.ceil(center_y / y_coords.length);
+				
+				//Draw the region
+				diff_ctx.strokeRect(reg_x, reg_y, reg_w, reg_h);
+				diff_ctx.fillStyle = "#0000ff";
+				diff_ctx.fillRect(reg_x + center_x, reg_y + center_y, 5, 5);
+				
+				//Draw on video overlay too
+				draw_marked_frame(diff_canvas.width, diff_canvas.height, reg_x, reg_y, reg_w, reg_h);
+				
+				
+				//On the next iteration the region-of-interest will be centered on the current center of mass
+				ROI_X = (reg_x + center_x) - Math.round(reg_w/2);
+				ROI_Y = (reg_y + center_y) - Math.round(reg_h/2);
+				
+			}
+			
+			function draw_marked_frame(vid_w, vid_h, x, y, w, h)
+			{
+				var video_overlay = document.getElementById("video_overlay");
+				var video_overlay_ctx = video_overlay.getContext("2d");
+				
+				var source_video = document.getElementById("source_video");
+				//video_overlay.width = source_video.width;
+				//video_overlay.height = source_video.height;
+				video_overlay.width = vid_w;
+				video_overlay.height = vid_h;
+				video_overlay_ctx.drawImage(source_video,0,0);
+				
+				video_overlay_ctx.strokeStyle = "#0000ff";
+				video_overlay_ctx.lineWidth = 5;
+				video_overlay_ctx.strokeRect(x, y, w, h);
+			}
+			
+			function draw_inital_target()
+			{
+				var video = document.getElementById("source_video");
+				var init_cnvs = document.getElementById("initial_target_frame");
+				init_cnvs.width = 600;
+				init_cnvs.height = 400;
+				var init_ctx = init_cnvs.getContext("2d");
+				init_ctx.drawImage(video,0,0);
+				init_ctx.strokeStyle = "#ff0000";
+				init_ctx.lineWidth = 5;
+				init_ctx.strokeRect(ROI_X,ROI_Y,30,30);
+			}
+			
+			function setup_env()
+			{
+				prepare_prev_frame();
+				var vid = document.getElementById("source_video");
+				//vid.currentTime = 13;
+				//vid.play();
+				//auto_step_video();
+				window.setInterval(draw_inital_target,0);
+			}
+			
+			function auto_track()
+			{
+				window.setInterval(frame_grab,200);
+			}
+
+		</script>
+		
+		<h1>Mean Shift Motion Tracking</h1>
+		<p>
+			After detecting the motion in the video it is often required to track the location of a moving object in the video.
+			The Mean Shift algorithm can be used for performing this task. The algorithm works as follows:
+			<ol>
+				<li>Compute <i>frame[n] - frame[n-1]</i></li>
+				<li>Find the center of mass within the region of interest within the difference frame.</li>
+				<li>Translate the region of interest so that its center is at the same position as the center of mass.</li>
+			</ol>
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Click <i>Play video</i> to begin playing the video. Once the object you wish to track appears in the red square click
+			<i>Auto Track</i>. The red square will follow the object. Below, the center of mass of the red square is represented
+			by the blue dot. Notice how the red square adjusts itself so that its center matches with the blue dot. <b>Tip:</b>
+			the algorithm works best on the second half of the video.
+		</p>
+		
+		<video src="pixabay_road_video.mp4" id="source_video" hidden="true"></video>
+		
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="first_frame_canvas" hidden="true"></canvas>
+					<canvas id="initial_target_frame"></canvas>
+				</td>
+				<!--
+				<td>
+				-->
+					<canvas id="second_frame_canvas" hidden="true"></canvas>
+				<!--
+				</td>
+				-->
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="Play Video" onclick="document.getElementById('source_video').play()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Auto Track" onclick="auto_track()"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<canvas id="difference_frame"></canvas>
+				</td>
+				<!--
+				<td>
+				-->
+					<canvas id="video_overlay" hidden="true"></canvas>
+				<!--
+				</td>
+				-->
+			</tr>
+		</table>
+		<a href="object_classification.html">Previous - Object Classification</a>
+	</body>
+</html>

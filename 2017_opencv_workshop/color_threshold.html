@@ -1,0 +1,158 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Color Threshold</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			MAX_X = 500;
+			MAX_Y = 331;
+			SRC_CANVAS_OFFSET_TOP = 0;
+			SRC_CANVAS_OFFSET_LEFT = 0;
+			EDGE_THRESHOLD = 35;
+			function prepare_source_canvas()
+			{
+				var cnvs = document.getElementById("source_canvas");
+				var src_im = document.getElementById("source_image");
+				cnvs.width = src_im.width;
+				cnvs.height = src_im.height;
+				SRC_CANVAS_OFFSET_LEFT = cnvs.offsetLeft;
+				SRC_CANVAS_OFFSET_TOP = cnvs.offsetTop;
+				var ctx = cnvs.getContext("2d");
+				ctx.drawImage(src_im,0,0);
+				//Also set the destination canvas to the appropriate size
+				var dst_cnvs = document.getElementById("dest_canvas");
+				dst_cnvs.width = src_im.width;
+				dst_cnvs.height = src_im.height;
+				cnvs.onmousedown = color_eyedrop;
+			}
+			
+			function color_eyedrop(event)
+			{
+				var color_input = document.getElementById("thresh_col");
+				var cnvs = document.getElementById("source_canvas");
+				var canvas_bounding_box = cnvs.getBoundingClientRect();
+				var ctx = cnvs.getContext("2d");
+				var x_pos = event.clientX - canvas_bounding_box.left;
+				var y_pos = event.clientY - canvas_bounding_box.top;
+				var pixel = ctx.getImageData(x_pos,y_pos,1,1).data;
+				var r_val = pixel[0].toString(16);
+				var g_val = pixel[1].toString(16);
+				var b_val = pixel[2].toString(16);
+				//padding
+				if (r_val.length == 1)
+				{
+					r_val = "0" + r_val;
+				}
+				if (g_val.length == 1)
+				{
+					g_val = "0" + g_val;
+				}
+				if (b_val.length == 1)
+				{
+					b_val = "0" + b_val;
+				}
+				var color_string = r_val + g_val + b_val;
+				color_input.value = color_string;
+			}
+			
+			function color_threshold()
+			{
+				var input_canvas = document.getElementById("source_canvas");
+				var output_canvas = document.getElementById("dest_canvas");
+				var input_ctx = input_canvas.getContext("2d");
+				var output_ctx = output_canvas.getContext("2d");
+				var img_data = input_ctx.getImageData(0,0,input_canvas.width,input_canvas.height);
+				
+				//Read user parameters
+				var input_color = document.getElementById("thresh_col");
+				var input_tolerance = document.getElementById("tol_col");
+				
+				var val_color = input_color.value;
+				var val_r = val_color.slice(0,2);
+				val_r = parseInt(val_r,16);
+				var val_g = val_color.slice(2,4);
+				val_g = parseInt(val_g,16);
+				var val_b = val_color.slice(4,6);
+				val_b = parseInt(val_b,16);
+				var val_tolerance = parseInt(input_tolerance.value);
+				
+				var output_data = output_ctx.getImageData(0,0,output_canvas.width, output_canvas.height);
+				output_data.data.fill(255);
+				
+				for (var i = 0 ; i < img_data.data.length; i+=4)
+				{
+					var src_r = img_data.data[i];
+					var src_g = img_data.data[i+1];
+					var src_b = img_data.data[i+2];
+					
+					var diff_r = src_r - val_r;
+					var diff_g = src_g - val_g;
+					var diff_b = src_b - val_b;
+					
+					var euclid_color_dist = Math.sqrt(diff_r*diff_r + diff_g*diff_g + diff_b*diff_b);
+				
+					if (euclid_color_dist < val_tolerance)
+					{
+						//var x_pos = (i/4) % input_canvas.width;
+						//var y_pos = (i/4) / input_canvas.height;
+						//output_ctx.fillStyle = "#ff0000";
+						//output_ctx.fillRect(x_pos, y_pos, 1, 1);
+						output_data.data[i] = 255;
+						output_data.data[i+1] = 0;
+						output_data.data[i+2] = 0;
+					}
+				}
+				output_ctx.putImageData(output_data,0,0);
+			}
+
+		</script>
+		
+		<h1>Color Thresholding</h1>
+		<p>
+			Color Thresholding is an important concept in computer vision. It is used as a step in object detection by selecting
+			regions of an image of a certain color. The algorithm works as follows:
+			<ol>
+				<li>Iterate through all pixels.</li>
+				<li>If the euclidan distance between the color of this pixel and the reference color is less than the tolerance, mark the pixel as being the reference color.</li>
+			</ol>
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Click <i>Prepare Source Canvas</i> to load the image to be processed. Click an area of the image to select the color
+			threshold. Set the tolerance value and click <i>Color Threshold</i> to obtain the binary image for this color thresholding.
+		</p>
+		
+		<img src="new_york_street.png" id="source_image" hidden="true"/>
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="source_canvas"></canvas>
+				</td>
+				<td>
+					<canvas id="dest_canvas"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="Prepare Source Canvas" onclick="prepare_source_canvas()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Color Threshold" onclick="color_threshold()"></input>
+								Color:<input type="field" id="thresh_col" value="000000"></input>
+								Tolerance:<input type="field" id="tol_col" value=10></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="edge_detection.html">Next - Edge Detection</a>
+	</body>
+</html>

@@ -1,0 +1,240 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Boolean Operations</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body onload="setup()">
+		<script type="text/javascript">
+			MOUSE_DOWN = false;
+			function setup()
+			{
+				var canvas_a = document.getElementById("canvas_a");
+				var canvas_b = document.getElementById("canvas_b");
+				canvas_a.onmousedown = down_callback;
+				canvas_a.onmouseup = up_callback;
+				canvas_a.onmousemove = move_callback;
+				
+				canvas_b.onmousedown = down_callback;
+				canvas_b.onmouseup = up_callback;
+				canvas_b.onmousemove = move_callback;
+				
+				var ctx_a = canvas_a.getContext("2d");
+				var ctx_b = canvas_b.getContext("2d");
+				var data_a = ctx_a.getImageData(0,0,canvas_a.width, canvas_b.height);
+				var data_b = ctx_b.getImageData(0,0,canvas_b.width, canvas_b.height);
+				data_a.data.fill(255);
+				data_b.data.fill(255);
+				ctx_a.putImageData(data_a,0,0);
+				ctx_b.putImageData(data_b,0,0);
+				
+			}
+			function down_callback(event)
+			{
+				MOUSE_DOWN = true;
+				//console.log(event);
+			}
+			function up_callback(event)
+			{
+				MOUSE_DOWN = false;
+				//console.log(event);
+			}
+			function move_callback(event)
+			{
+				if (MOUSE_DOWN)
+				{
+					//console.log(event);
+					var canvas_a = document.getElementById("canvas_a");
+					var ctx_a = canvas_a.getContext("2d");
+					var canvas_b = document.getElementById("canvas_b");
+					var ctx_b = canvas_b.getContext("2d");
+					var bounding_box_a = canvas_a.getBoundingClientRect();
+					var bounding_box_b = canvas_b.getBoundingClientRect();
+
+					if (event.clientX > bounding_box_b.left && event.clientX < bounding_box_b.right && event.clientY > bounding_box_b.top && event.clientY < bounding_box_b.bottom)
+					{
+						//Draw canvas B
+						var bounding_box = canvas_b.getBoundingClientRect();
+						var x_pos = event.clientX - bounding_box.left;
+						var y_pos = event.clientY - bounding_box.top;
+						ctx_b.fillStyle = "#ff0000";
+						ctx_b.fillRect(x_pos, y_pos, 10, 10);
+					}
+					
+					else if (event.clientX > bounding_box_a.left && event.clientX < bounding_box_a.right && event.clientY > bounding_box_a.top && event.clientY < bounding_box_a.bottom)
+					{
+						//Draw canvas A
+						var bounding_box = canvas_a.getBoundingClientRect();
+						var x_pos = event.clientX - bounding_box.left;
+						var y_pos = event.clientY - bounding_box.top;
+						ctx_a.fillStyle = "#ff0000";
+						ctx_a.fillRect(x_pos, y_pos, 10, 10);
+					}
+				}
+			}
+			function a_and_b()
+			{
+				var canvas_a = document.getElementById("canvas_a");
+				var ctx_a = canvas_a.getContext("2d");
+				var canvas_b = document.getElementById("canvas_b");
+				var ctx_b = canvas_b.getContext("2d");
+				var canvas_c = document.getElementById("canvas_c");
+				var ctx_c = canvas_c.getContext("2d");
+				var image_data_a = ctx_a.getImageData(0,0,canvas_a.height, canvas_a.width);
+				var image_data_b = ctx_b.getImageData(0,0,canvas_b.height, canvas_b.width);
+				var dest_data = image_data_a;
+				//Compute bitwise AND
+				for (var i = 0; i < image_data_a.data.length; i+=4)
+				{
+					var a_r = image_data_a.data[i];
+					var a_g = image_data_a.data[i+1];
+					var a_b = image_data_a.data[i+2];
+					
+					var b_r = image_data_b.data[i];
+					var b_g = image_data_b.data[i+1];
+					var b_b = image_data_b.data[i+2];
+					
+					var c_r = 255;
+					var c_g = 255;
+					var c_b = 255;
+					
+					if (a_r == b_r && a_r == 255 && a_b == b_b && a_b == 0)
+					{
+						c_g = 0;
+						c_b = 0;
+					}
+					dest_data.data[i] = c_r;
+					dest_data.data[i+1] = c_g;
+					dest_data.data[i+2] = c_b;
+					dest_data.data[i+3] = 255;
+				}
+				ctx_c.putImageData(dest_data,0,0);
+			}
+			function a_or_b()
+			{
+				var canvas_a = document.getElementById("canvas_a");
+				var ctx_a = canvas_a.getContext("2d");
+				var canvas_b = document.getElementById("canvas_b");
+				var ctx_b = canvas_b.getContext("2d");
+				var canvas_c = document.getElementById("canvas_c");
+				var ctx_c = canvas_c.getContext("2d");
+				var image_data_a = ctx_a.getImageData(0,0,canvas_a.height, canvas_a.width);
+				var image_data_b = ctx_b.getImageData(0,0,canvas_b.height, canvas_b.width);
+				var dest_data = image_data_a;
+				//Compute bitwise OR
+				for (var i = 0; i < image_data_a.data.length; i+=4)
+				{
+					var a_r = image_data_a.data[i];
+					var a_g = image_data_a.data[i+1];
+					var a_b = image_data_a.data[i+2];
+					
+					var b_r = image_data_b.data[i];
+					var b_g = image_data_b.data[i+1];
+					var b_b = image_data_b.data[i+2];
+					
+					var c_r = 255;
+					var c_g = 255;
+					var c_b = 255;
+					
+					if (a_r == 255 && a_b == 0 || b_r == 255 && b_b == 0)
+					{
+						c_g = 0;
+						c_b = 0;
+					}
+					dest_data.data[i] = c_r;
+					dest_data.data[i+1] = c_g;
+					dest_data.data[i+2] = c_b;
+					dest_data.data[i+3] = 255;
+				}
+				ctx_c.putImageData(dest_data,0,0);
+			}
+			function a_xor_b()
+			{
+				var canvas_a = document.getElementById("canvas_a");
+				var ctx_a = canvas_a.getContext("2d");
+				var canvas_b = document.getElementById("canvas_b");
+				var ctx_b = canvas_b.getContext("2d");
+				var canvas_c = document.getElementById("canvas_c");
+				var ctx_c = canvas_c.getContext("2d");
+				var image_data_a = ctx_a.getImageData(0,0,canvas_a.height, canvas_a.width);
+				var image_data_b = ctx_b.getImageData(0,0,canvas_b.height, canvas_b.width);
+				var dest_data = image_data_a;
+				//Compute bitwise XOR
+				for (var i = 0; i < image_data_a.data.length; i+=4)
+				{
+					var a_r = image_data_a.data[i];
+					var a_g = image_data_a.data[i+1];
+					var a_b = image_data_a.data[i+2];
+					
+					var b_r = image_data_b.data[i];
+					var b_g = image_data_b.data[i+1];
+					var b_b = image_data_b.data[i+2];
+					
+					var c_r = 255;
+					var c_g = 255;
+					var c_b = 255;
+					
+					if (a_r == 255 && a_b == 0 && b_b == 255 || b_r == 255 && b_b == 0 && a_b == 255)
+					{
+						c_g = 0;
+						c_b = 0;
+						//console.log(b_b);
+					}
+					dest_data.data[i] = c_r;
+					dest_data.data[i+1] = c_g;
+					dest_data.data[i+2] = c_b;
+					dest_data.data[i+3] = 255;
+				}
+				ctx_c.putImageData(dest_data,0,0);
+			}
+		</script>
+		
+		<h1>Boolean Operations</h1>
+		<p>
+			Boolean Operations are used in Computer Vision when working with binary images. They are used for filtering - for example,
+			finding regions that exist in both images (AND), regions that exist in either image (OR), or regions exclusive to one image
+			(XOR).
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Draw binary images on canvases A and B and apply a boolean operation to obtain image C.
+		</p>
+		
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="canvas_a" width="500" height="500"></canvas>
+				</td>
+				<td>
+					<canvas id="canvas_b" width="500" height="500"></canvas>
+				</td>
+				<td>
+					<canvas id="canvas_c" width="500" height="500"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="C = A AND B" onclick="a_and_b()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="C = A OR B" onclick="a_or_b()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="C = A XOR B" onclick="a_xor_b()"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="erosion_dilation.html">Previous - Erosion and Dilation</a>
+		<a href="center_of_mass.html">Next - Center of Mass</a>
+	</body>
+</html>

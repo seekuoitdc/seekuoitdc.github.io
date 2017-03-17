@@ -1,0 +1,347 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Erosion and Dilation</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			MAX_X = 500;
+			MAX_Y = 331;
+			SRC_CANVAS_OFFSET_TOP = 0;
+			SRC_CANVAS_OFFSET_LEFT = 0;
+			EDGE_THRESHOLD = 35;
+			function prepare_source_canvas()
+			{
+				var cnvs = document.getElementById("source_canvas");
+				var src_im = document.getElementById("source_image");
+				cnvs.width = src_im.width;
+				cnvs.height = src_im.height;
+				SRC_CANVAS_OFFSET_LEFT = cnvs.offsetLeft;
+				SRC_CANVAS_OFFSET_TOP = cnvs.offsetTop;
+				var ctx = cnvs.getContext("2d");
+				ctx.drawImage(src_im,0,0);
+				//Also set the destination canvas to the appropriate size
+				var dst_cnvs = document.getElementById("dest_canvas");
+				dst_cnvs.width = src_im.width;
+				dst_cnvs.height = src_im.height;
+			}
+			
+			function move_to_source()
+			{
+				var cnvs = document.getElementById("source_canvas");
+				var src_ctx = cnvs.getContext("2d");
+				var dest_canvas = document.getElementById("dest_canvas");
+				var dest_ctx = dest_canvas.getContext("2d");
+				//Clear the source canvas
+				src_ctx.fillStyle = "#ffffff";
+				src_ctx.fillRect(0,0,cnvs.width,cnvs.height);
+				src_ctx.drawImage(dest_canvas,0,0);
+				dest_ctx.fillStyle = "#ffffff";
+				dest_ctx.fillRect(0,0,dest_canvas.width,dest_canvas.height);
+			}
+			
+			function process_region(src_ctx, dst_ctx, x_pos, y_pos)
+			{
+				var block_data = src_ctx.getImageData(x_pos -1 , y_pos - 1, 2, 2);
+				
+				//Calculate Mean
+				var block_sum_r = 0;
+				var block_sum_g = 0;
+				var block_sum_b = 0;
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					block_sum_r += block_data.data[i];
+					block_sum_g += block_data.data[i+1];
+					block_sum_b += block_data.data[i+2];
+				}
+				var block_mean_r = block_sum_r / (block_data.data.length / 4);
+				var block_mean_g = block_sum_g / (block_data.data.length / 4);
+				var block_mean_b = block_sum_b / (block_data.data.length / 4);
+				
+				//Calculate Variance
+				var block_dev_r = 0;
+				var block_dev_g = 0;
+				var block_dev_b = 0;
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					var r = block_data.data[i];
+					var g = block_data.data[i+1];
+					var b = block_data.data[i+2];
+					
+					block_dev_r += (r - block_mean_r) * (r - block_mean_r);
+					block_dev_g += (g - block_mean_g) * (g - block_mean_g);
+					block_dev_b += (b - block_mean_b) * (b - block_mean_b);
+				}
+				var total_dev = Math.sqrt(block_dev_r + block_dev_g + block_dev_b);
+				
+				if (total_dev > EDGE_THRESHOLD)
+				{
+					dst_ctx.fillStyle = "#ff0000";
+					dst_ctx.fillRect(x_pos, y_pos, 2, 2);
+				}
+			}
+			
+			var DEMO_X = 0;
+			var DEMO_Y = 0;
+			function edge_step()
+			{
+				//console.log("edge_step called " + x + ", " + y);
+				
+				//Run in a loop for much faster speed
+				for (var i = 0; i < 100; i++)
+				{
+					var x_pos = DEMO_X;
+					var y_pos = DEMO_Y;
+					
+					//Process the region
+					process_region(MY_SRC_CTX, MY_DST_CTX, x_pos, y_pos);
+					
+					//Increment
+					DEMO_X += 1;
+					if (DEMO_X > MAX_X)
+					{
+						DEMO_X = 0;
+						DEMO_Y += 1;
+					}
+				}
+				//Decide if this method needs to be run again
+				if (DEMO_Y < MAX_Y)
+				{
+					window.setInterval(edge_step);
+				}
+				
+			}
+			
+			function edge_demo()
+			{
+				DEMO_X = 0;
+				DEMO_Y = 0;
+				var src_cnvs = document.getElementById("source_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dest_canvas = document.getElementById("dest_canvas");
+				var dest_ctx = dest_canvas.getContext("2d");
+				MY_DST_CTX = dest_ctx;
+				MY_SRC_CTX = src_ctx;
+
+				
+				//Begin the edge_step process
+				edge_step();
+			}
+			
+			function dilate_region(src_ctx, dst_ctx, x_pos, y_pos)
+			{
+				var block_data = src_ctx.getImageData(x_pos - DILATION_SIZE/2 , y_pos - DILATION_SIZE/2, DILATION_SIZE, DILATION_SIZE);
+				
+				//Calculate Mean
+				var block_sum_r = 0;
+				var block_sum_g = 0;
+				var block_sum_b = 0;
+				
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					block_sum_r += block_data.data[i];
+					block_sum_g += block_data.data[i+1];
+					block_sum_b += block_data.data[i+2];
+				}
+				var block_mean_r = block_sum_r / (block_data.data.length / 4);
+				var block_mean_g = block_sum_g / (block_data.data.length / 4);
+				var block_mean_b = block_sum_b / (block_data.data.length / 4);
+				
+				if (block_mean_r > 10 && block_mean_b != block_mean_r && block_mean_g != block_mean_r)
+				{
+					dst_ctx.fillStyle = "#ff0000";
+					dst_ctx.fillRect(x_pos - DILATION_SIZE/2, y_pos - DILATION_SIZE/2, DILATION_SIZE, DILATION_SIZE);
+				}
+			}
+
+			function dilate_step()
+			{	
+				//Run in a loop for much faster speed
+				for (var i = 0; i < 100; i++)
+				{
+					var x_pos = DEMO_X;
+					var y_pos = DEMO_Y;
+					
+					//Process the region
+					dilate_region(MY_SRC_CTX, MY_DST_CTX, x_pos, y_pos);
+					
+					//Increment
+					DEMO_X += 1;
+					if (DEMO_X > MAX_X)
+					{
+						DEMO_X = 0;
+						DEMO_Y += 1;
+					}
+				}
+				//Decide if this method needs to be run again
+				if (DEMO_Y < MAX_Y)
+				{
+					window.setInterval(dilate_step);
+				}
+			}
+			
+			function dilate_demo()
+			{
+				DEMO_X = 0;
+				DEMO_Y = 0;
+				var src_cnvs = document.getElementById("source_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dest_canvas = document.getElementById("dest_canvas");
+				var dest_ctx = dest_canvas.getContext("2d");
+				var dilation_size_input = document.getElementById("dilation_size");
+				DILATION_SIZE = dilation_size_input.value;
+				MY_DST_CTX = dest_ctx;
+				MY_SRC_CTX = src_ctx;
+
+				
+				//Begin the edge_step process
+				dilate_step();
+			}
+			
+			function erode_region(src_ctx, dst_ctx, x_pos, y_pos)
+			{
+				var block_data = src_ctx.getImageData(x_pos - ERODE_SIZE/2 , y_pos - ERODE_SIZE/2, ERODE_SIZE, ERODE_SIZE);
+				
+				//Calculate Mean
+				var block_sum_r = 0;
+				var block_sum_g = 0;
+				var block_sum_b = 0;
+				
+				for (var i = 0; i < block_data.data.length; i+=4)
+				{
+					block_sum_r += block_data.data[i];
+					block_sum_g += block_data.data[i+1];
+					block_sum_b += block_data.data[i+2];
+				}
+				var block_mean_r = block_sum_r / (block_data.data.length / 4);
+				var block_mean_g = block_sum_g / (block_data.data.length / 4);
+				var block_mean_b = block_sum_b / (block_data.data.length / 4);
+				
+				if (block_mean_b > 10)
+				{
+					dst_ctx.fillStyle = "#ffffffff";
+					dst_ctx.fillRect(x_pos - ERODE_SIZE/2, y_pos - ERODE_SIZE/2, ERODE_SIZE, ERODE_SIZE);
+				}
+			}
+			
+			function erode_step()
+			{	
+				//console.log("Inside erode_step");
+				//Run in a loop for much faster speed
+				for (var i = 0; i < 100; i++)
+				{
+					var x_pos = DEMO_X;
+					var y_pos = DEMO_Y;
+					
+					//Process the region
+					erode_region(MY_SRC_CTX, MY_DST_CTX, x_pos, y_pos);
+					
+					//Increment
+					DEMO_X += 1;
+					if (DEMO_X > MAX_X)
+					{
+						DEMO_X = 0;
+						DEMO_Y += 1;
+					}
+				}
+				//Decide if this method needs to be run again
+				if (DEMO_Y < MAX_Y)
+				{
+					window.setInterval(erode_step);
+				}
+			}
+			
+			function erode_demo()
+			{
+				DEMO_X = 0;
+				DEMO_Y = 0;
+				var src_cnvs = document.getElementById("source_canvas");
+				var src_ctx = src_cnvs.getContext("2d");
+				var dest_canvas = document.getElementById("dest_canvas");
+				var dest_ctx = dest_canvas.getContext("2d");
+				var erode_size_input = document.getElementById("erode_size");
+				ERODE_SIZE = erode_size_input.value;
+				MY_DST_CTX = dest_ctx;
+				MY_SRC_CTX = src_ctx;
+				
+				//Copy source to dest
+				dest_ctx.drawImage(src_cnvs,0,0);
+
+				
+				//Begin the edge_step process
+				erode_step();
+			}
+			
+		</script>
+		
+		<h1>Erosion and Dilation</h1>
+		<p>
+			After obtaining a binary image using a filtering algorithm it is often necessary to remove noise from it using erosion and dilation operations.
+			The erosion operation works as follows:
+			<ol>
+				<li>Sweep a region across the binary input image.</li>
+				<li>If the majority of the region is False, set all pixels in the region to False.</li>
+			</ol>
+			The dilation operation works as follows:
+			<ol>
+				<li>Sweep a region across the binary input image.</li>
+				<li>If the majority of the region is True, set all pixels in the region to True.</li>
+			</ol>
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Click <i>Prepare Source Canvas</i> to load the image to be processed. Click <i>Edge Detect</i> to draw the detected edges.
+			Click <i>Move Destination to Source</i> to make the output of the edge detector the input to the erosion/dilation operation.
+			Click <i>Dilate Source</i> to dilate this binary image. Click <i>Erode Source</i> to erode this binary image.
+			
+		</p>
+		
+		<img src="new_york_street.png" id="source_image" hidden="true"/>
+		<table border="8">
+			<tr>
+				<td>
+					<canvas id="source_canvas"></canvas>
+				</td>
+				<td>
+					<canvas id="dest_canvas"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="Prepare Source Canvas" onclick="prepare_source_canvas()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Edge Detect" onclick="edge_demo()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Move Destination to Source" onclick="move_to_source()"></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Dilate Source" onclick="dilate_demo()"></input>
+								Size:<input type="field" id="dilation_size" value=2></input>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" value="Erode Source" onclick="erode_demo()"></input>
+								Size:<input type="field" id="erode_size" value=2></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="edge_detection.html">Previous - Edge Detection</a>
+		<a href="boolean_operations.html">Next - Boolean Operations</a>
+	</body>
+</html>

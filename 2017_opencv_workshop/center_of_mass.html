@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<title>Computer Vision Trainer - Center of Mass</title>
+		<meta content="">
+		<style></style>
+	</head>
+	<body onload="setup()">
+		<script type="text/javascript">
+			MOUSE_DOWN = false;
+			function setup()
+			{
+				var canvas_a = document.getElementById("canvas_a");
+				var canvas_b = document.getElementById("canvas_b");
+				canvas_a.onmousedown = down_callback;
+				canvas_a.onmouseup = up_callback;
+				canvas_a.onmousemove = move_callback;
+				
+				canvas_b.onmousedown = down_callback;
+				canvas_b.onmouseup = up_callback;
+				canvas_b.onmousemove = move_callback;
+				
+				var ctx_a = canvas_a.getContext("2d");
+				var ctx_b = canvas_b.getContext("2d");
+				var data_a = ctx_a.getImageData(0,0,canvas_a.width, canvas_b.height);
+				var data_b = ctx_b.getImageData(0,0,canvas_b.width, canvas_b.height);
+				data_a.data.fill(255);
+				data_b.data.fill(255);
+				ctx_a.putImageData(data_a,0,0);
+				ctx_b.putImageData(data_b,0,0);
+				
+			}
+			function down_callback(event)
+			{
+				MOUSE_DOWN = true;
+				//console.log(event);
+			}
+			function up_callback(event)
+			{
+				MOUSE_DOWN = false;
+				//console.log(event);
+			}
+			function move_callback(event)
+			{
+				if (MOUSE_DOWN)
+				{
+					//console.log(event);
+					var canvas_a = document.getElementById("canvas_a");
+					var ctx_a = canvas_a.getContext("2d");
+					var bounding_box_a = canvas_a.getBoundingClientRect();
+					
+					if (event.clientX > bounding_box_a.left && event.clientX < bounding_box_a.right && event.clientY > bounding_box_a.top && event.clientY < bounding_box_a.bottom)
+					{
+						//Draw canvas A
+						var bounding_box = canvas_a.getBoundingClientRect();
+						var x_pos = event.clientX - bounding_box.left;
+						var y_pos = event.clientY - bounding_box.top;
+						ctx_a.fillStyle = "#ff0000";
+						ctx_a.fillRect(x_pos, y_pos, 10, 10);
+					}
+				}
+			}
+			function center_of_mass()
+			{
+				//Copy canvas a to canvas b
+				var cnvs_a = document.getElementById("canvas_a");
+				var cnvs_b = document.getElementById("canvas_b");
+				var ctx_a = cnvs_a.getContext("2d");
+				var ctx_b = cnvs_b.getContext("2d");
+				var data_a = ctx_a.getImageData(0, 0, cnvs_a.width, cnvs_a.height);
+				ctx_b.putImageData(data_a,0,0);
+				
+				//Calculate center of mass
+				var x_coords = [];
+				var y_coords = [];
+				
+				for (var i = 0; i < data_a.data.length; i+=4)
+				{
+					//for each pixel
+					var x_pos = (i/4) % cnvs_a.width;
+					var y_pos = (i/4) / cnvs_a.height;
+					var r = data_a.data[i];
+					var g = data_a.data[i+1];
+					var b = data_a.data[i+2];
+					if (r == 255 && g == 0 && b == 0)
+					{
+						//red pixel
+						x_coords.push(x_pos);
+						y_coords.push(y_pos);
+					}
+				}
+				
+				//Average of x_coords and y_coords
+				var center_x = 0;
+				var center_y = 0;
+				
+				for (var i = 0; i < x_coords.length; i++)
+				{
+					center_x += x_coords[i];
+				}
+				center_x = Math.ceil(center_x / x_coords.length);
+				
+				for (var i = 0; i < y_coords.length; i++)
+				{
+					center_y += y_coords[i];
+				}
+				center_y = Math.ceil(center_y / y_coords.length);
+				
+				//Plot the center of mass on canvas B
+				ctx_b.fillStyle = "#0000ff";
+				ctx_b.fillRect(center_x - 5, center_y - 5, 10, 10);
+				
+				//return [center_x, center_y];
+			}
+		</script>
+		
+		<h1>Center of Mass</h1>
+		<p>
+			The center of mass of a binary image is obtained by finding the average <i>x</i> coordinate and average <i>y</i> coordinate of each
+			set pixel.
+		</p>
+		
+		<h2>Demo</h2>
+		<p>
+			Draw a binary image on canvas A and plot its center of mass on canvas B.
+		</p>
+		
+		<table border="8">
+			<tr>
+				<td>Canvas A</td>
+				<td>Canvas B</td>
+			</tr>
+			<tr>
+				<td>
+					<canvas id="canvas_a" width="500" height="500"></canvas>
+				</td>
+				<td>
+					<canvas id="canvas_b" width="500" height="500"></canvas>
+				</td>
+				<td>
+					<table>
+						<th>Functions</th>
+						<tr>
+							<td>
+								<input type="button" value="Find Center of Mass" onclick="center_of_mass()"></input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<a href="boolean_operations.html">Previous - Boolean Operations</a>
+		<a href="object_classification.html">Next - Object Classification</a>
+	</body>
+</html>
