@@ -4,7 +4,7 @@
   <title><![CDATA[SEEK @ UOIT DC]]></title>
   <link href="http://seekuoitdc.github.io/atom.xml" rel="self"/>
   <link href="http://seekuoitdc.github.io/"/>
-  <updated>2017-03-19T21:58:10+00:00</updated>
+  <updated>2017-04-08T21:32:14+00:00</updated>
   <id>http://seekuoitdc.github.io/</id>
   <author>
     <name><![CDATA[SEEK UOIT DC]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OpenCV Workshop - Presentation]]></title>
+    <link href="http://seekuoitdc.github.io/blog/2017/04/08/opencv-workshop/"/>
+    <updated>2017-04-08T17:10:00+00:00</updated>
+    <id>http://seekuoitdc.github.io/blog/2017/04/08/opencv-workshop</id>
+    <content type="html"><![CDATA[<p>Thank you to everyone who came out to our OpenCV workshop. Those interested in the interactive presentation
+may view it <a href="http://seekuoitdc.github.io/2017_opencv_workshop/color_threshold.html">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[OpenCV Workshop - Tomorrow]]></title>
