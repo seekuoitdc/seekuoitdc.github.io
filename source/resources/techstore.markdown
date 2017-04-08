@@ -17,7 +17,7 @@ H220 - Durham College Main Campus
 Directions
 ----------
 
-1. Turn left of Gordon Wiley Building
+1. Turn right of Gordon Wiley Building
 	
 	![/images/techstore_map/0.jpg](/images/techstore_map/0.jpg)
 	
